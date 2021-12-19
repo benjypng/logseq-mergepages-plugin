@@ -1,0 +1,33 @@
+{
+  "name": "logseq-mergepages-plugin",
+  "version": "1.0",
+  "description": "Simple plugin to help merge pages.",
+  "main": "dist/index.html",
+  "targets": {
+    "main": false
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "postcss src/tailwind.css -o src/App.css && parcel build --no-source-maps src/index.html --public-url ./"
+  },
+  "keywords": [],
+  "author": "hkgnp",
+  "license": "MIT",
+  "dependencies": {
+    "@logseq/libs": "0.0.1-alpha.30",
+    "autoprefix": "^1.0.1",
+    "postcss": "^8.4.5",
+    "postcss-import": "^14.0.2",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "tailwindcss": "^3.0.7"
+  },
+  "logseq": {
+    "id": "logseq-mergepages-plugin",
+    "title": "logseq-mergepages-plugin",
+    "icon": "./icon.svg"
+  },
+  "devDependencies": {
+    "parcel": "^2.0.1"
+  }
+}
