@@ -1,3 +1,5 @@
+![GitHub all releases](https://img.shields.io/github/downloads/hkgnp/logseq-mergepages-plugin/total)
+
 # Introduction
 
 This simple plugin helps to merge multiple pages into a single page. See video below for details.
