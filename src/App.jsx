@@ -56,11 +56,27 @@ const App = () => {
       return;
     }
 
-    // Add up all the page block trees to create a batch block
     let arrOfPageBlockTreesToMerge = [];
     for (let p of pagesToMergeFrom) {
+      // Add up all the page block trees to create a batch block
       const pbt = await logseq.Editor.getPageBlocksTree(p.name);
       arrOfPageBlockTreesToMerge = arrOfPageBlockTreesToMerge.concat(pbt);
+
+      // Create alias
+      const pbtPageMergeTo = await logseq.Editor.getPageBlocksTree(
+        pageToMergeTo.name
+      );
+
+      const propertyBlock = await logseq.Editor.insertBlock(
+        pbtPageMergeTo[0].uuid,
+        ``,
+        { before: true }
+      );
+
+      // Update block if not the alias won't register
+      await logseq.Editor.updateBlock(propertyBlock.uuid, `alias:: ${p.name}`);
+
+      // Delete page after completing the above actions
       await logseq.Editor.deletePage(p.name);
     }
 
