@@ -62,7 +62,7 @@ const App = () => {
       const pbt = await logseq.Editor.getPageBlocksTree(p.name);
       arrOfPageBlockTreesToMerge = arrOfPageBlockTreesToMerge.concat(pbt);
 
-      if (state === 'alias') {
+      if (option === 'alias') {
         // Create alias
         const pbtPageMergeTo = await logseq.Editor.getPageBlocksTree(
           pageToMergeTo.name
@@ -79,7 +79,10 @@ const App = () => {
           propertyBlock.uuid,
           `alias:: ${p.name}`
         );
-      } else if (state === 'delete') {
+
+        // Delete page after completing the above actions
+        await logseq.Editor.deletePage(p.name);
+      } else if (option === 'delete') {
         // Delete page after completing the above actions
         await logseq.Editor.deletePage(p.name);
       }
