@@ -8,7 +8,7 @@ This simple plugin helps to merge multiple pages into a single page. See video b
 
 # Warning
 
-This plugin deletes pages that have been merged to the main page. A feature to not delete pages, but create aliases instead is coming soon.
+This plugin deletes pages that have been merged to the main page. A feature to create aliases is coming soon.
 
 # Installation
 
