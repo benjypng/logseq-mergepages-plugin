@@ -11,6 +11,8 @@ This simple plugin helps to merge multiple pages into a single page. Links to pr
 
 See video below for details.
 
+![](/screenshots/demo2.gif)
+
 ![](/screenshots/demo.gif)
 
 # Installation
