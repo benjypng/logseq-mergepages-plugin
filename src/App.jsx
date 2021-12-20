@@ -50,7 +50,7 @@ const App = () => {
     setPagesToMergeFrom('');
   };
 
-  const mergePages = async () => {
+  const mergePages = async (option) => {
     if (!pageToMergeTo || pagesToMergeFrom.length === 0) {
       logseq.App.showMsg('You have not selected a page to merge from or to.');
       return;
@@ -62,22 +62,27 @@ const App = () => {
       const pbt = await logseq.Editor.getPageBlocksTree(p.name);
       arrOfPageBlockTreesToMerge = arrOfPageBlockTreesToMerge.concat(pbt);
 
-      // Create alias
-      const pbtPageMergeTo = await logseq.Editor.getPageBlocksTree(
-        pageToMergeTo.name
-      );
+      if (state === 'alias') {
+        // Create alias
+        const pbtPageMergeTo = await logseq.Editor.getPageBlocksTree(
+          pageToMergeTo.name
+        );
 
-      const propertyBlock = await logseq.Editor.insertBlock(
-        pbtPageMergeTo[0].uuid,
-        ``,
-        { before: true }
-      );
+        const propertyBlock = await logseq.Editor.insertBlock(
+          pbtPageMergeTo[0].uuid,
+          ``,
+          { before: true }
+        );
 
-      // Update block if not the alias won't register
-      await logseq.Editor.updateBlock(propertyBlock.uuid, `alias:: ${p.name}`);
-
-      // Delete page after completing the above actions
-      await logseq.Editor.deletePage(p.name);
+        // Update block if not the alias won't register
+        await logseq.Editor.updateBlock(
+          propertyBlock.uuid,
+          `alias:: ${p.name}`
+        );
+      } else if (state === 'delete') {
+        // Delete page after completing the above actions
+        await logseq.Editor.deletePage(p.name);
+      }
     }
 
     // Add in a block called Mergers in the page to merge to park the batch block under it
@@ -152,12 +157,20 @@ const App = () => {
 
         <div>
           {pageToMergeTo && pagesToMergeFrom.length > 0 && (
-            <button
-              onClick={mergePages}
-              className="font-mono text-black border border-black bg-red-300 p-2 rounded-md mr-1"
-            >
-              Merge and delete 'merged from' pages'
-            </button>
+            <React.Fragment>
+              <button
+                onClick={() => mergePages('alias')}
+                className="font-mono text-black border border-black bg-pink-400 p-2 rounded-md mr-1"
+              >
+                Merge and create aliases
+              </button>
+              <button
+                onClick={() => mergePages('delete')}
+                className="font-mono text-black border border-black bg-red-500 p-2 rounded-md mr-1"
+              >
+                Merge and do not create aliases
+              </button>
+            </React.Fragment>
           )}
           <button
             onClick={hide}
