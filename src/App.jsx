@@ -74,23 +74,43 @@ const App = () => {
       }
     }
 
-    const aliasArrString = aliasArr.join(', ');
+    // Join all aliases in a string with square brackets
+    let aliasArrWithBrackets = aliasArr.map((a) => `[[${a}]]`);
+    let aliasArrString = aliasArrWithBrackets.join(', ');
 
-    // Update block if not the alias won't register
+    // Get page blocks tree for the page to merge to
     const pbtPageMergeTo = await logseq.Editor.getPageBlocksTree(
       pageToMergeTo.name
     );
 
-    const propertyBlock = await logseq.Editor.insertBlock(
-      pbtPageMergeTo[0].uuid,
-      '',
-      { before: true }
-    );
+    // Scenario: Alias is already existing
+    if (pbtPageMergeTo[0].content.startsWith('alias:: ')) {
+      // Get the current alias as a string
+      let currAliasString = pbtPageMergeTo[0].content.substring(8);
 
-    await logseq.Editor.updateBlock(
-      propertyBlock.uuid,
-      `alias:: ${aliasArrString}`
-    );
+      // Concatenate with the alias string that is gotten from runnig the current merge
+      currAliasString = currAliasString.concat(', ', aliasArrString);
+
+      // Update block if not the alias won't register
+      await logseq.Editor.updateBlock(
+        pbtPageMergeTo[0].uuid,
+        `alias:: ${currAliasString}`
+      );
+
+      // Scenario: Alias is not present
+    } else {
+      const propertyBlock = await logseq.Editor.insertBlock(
+        pbtPageMergeTo[0].uuid,
+        '',
+        { before: true }
+      );
+
+      // Update block if not the alias won't register
+      await logseq.Editor.updateBlock(
+        propertyBlock.uuid,
+        `alias:: ${aliasArrString}`
+      );
+    }
 
     // Add in a block called Mergers in the page to merge to park the batch block under it
     const mergerBlock = await logseq.Editor.insertBlock(

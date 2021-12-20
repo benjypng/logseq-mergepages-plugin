@@ -1,6 +1,6 @@
 {
   "name": "logseq-mergepages-plugin",
-  "version": "1.1",
+  "version": "1.3",
   "description": "Simple plugin to help merge pages.",
   "main": "dist/index.html",
   "targets": {
