@@ -57,28 +57,14 @@ const App = () => {
     }
 
     let arrOfPageBlockTreesToMerge = [];
+    let aliasArr = [];
     for (let p of pagesToMergeFrom) {
       // Add up all the page block trees to create a batch block
       const pbt = await logseq.Editor.getPageBlocksTree(p.name);
       arrOfPageBlockTreesToMerge = arrOfPageBlockTreesToMerge.concat(pbt);
 
       if (option === 'alias') {
-        // Create alias
-        const pbtPageMergeTo = await logseq.Editor.getPageBlocksTree(
-          pageToMergeTo.name
-        );
-
-        const propertyBlock = await logseq.Editor.insertBlock(
-          pbtPageMergeTo[0].uuid,
-          ``,
-          { before: true }
-        );
-
-        // Update block if not the alias won't register
-        await logseq.Editor.updateBlock(
-          propertyBlock.uuid,
-          `alias:: ${p.name}`
-        );
+        aliasArr = aliasArr.concat(p.name);
 
         // Delete page after completing the above actions
         await logseq.Editor.deletePage(p.name);
@@ -87,6 +73,24 @@ const App = () => {
         await logseq.Editor.deletePage(p.name);
       }
     }
+
+    const aliasArrString = aliasArr.join(', ');
+
+    // Update block if not the alias won't register
+    const pbtPageMergeTo = await logseq.Editor.getPageBlocksTree(
+      pageToMergeTo.name
+    );
+
+    const propertyBlock = await logseq.Editor.insertBlock(
+      pbtPageMergeTo[0].uuid,
+      '',
+      { before: true }
+    );
+
+    await logseq.Editor.updateBlock(
+      propertyBlock.uuid,
+      `alias:: ${aliasArrString}`
+    );
 
     // Add in a block called Mergers in the page to merge to park the batch block under it
     const mergerBlock = await logseq.Editor.insertBlock(
@@ -158,9 +162,15 @@ const App = () => {
         {pagesToMergeFrom &&
           pagesToMergeFrom.map((p) => <Card name={p.name} uuid={p.uuid} />)}
 
-        <div>
+        <div className="flex justify-between">
+          <button
+            onClick={hide}
+            className="font-mono text-black border bg-white border-purple-400 p-2 rounded-md"
+          >
+            Close UI
+          </button>
           {pageToMergeTo && pagesToMergeFrom.length > 0 && (
-            <React.Fragment>
+            <div>
               <button
                 onClick={() => mergePages('alias')}
                 className="font-mono text-black border border-black bg-pink-400 p-2 rounded-md mr-1"
@@ -173,14 +183,8 @@ const App = () => {
               >
                 Merge and do not create aliases
               </button> */}
-            </React.Fragment>
+            </div>
           )}
-          <button
-            onClick={hide}
-            className="font-mono text-black border bg-white border-purple-400 p-2 rounded-md"
-          >
-            Close UI
-          </button>
         </div>
       </div>
     </div>
