@@ -4,6 +4,11 @@
 
 This simple plugin helps to merge multiple pages into a single page. Links to previous pages are redirected to the page that they have been merged to.
 
+### Supports
+
+- Page titles with square brackets.
+- Merge different pages to the same page at different times.
+
 See video below for details.
 
 ![](/screenshots/demo.gif)
