@@ -164,12 +164,12 @@ const App = () => {
               >
                 Merge and create aliases
               </button>
-              <button
+              {/* <button
                 onClick={() => mergePages('delete')}
                 className="font-mono text-black border border-black bg-red-500 p-2 rounded-md mr-1"
               >
                 Merge and do not create aliases
-              </button>
+              </button> */}
             </React.Fragment>
           )}
           <button
