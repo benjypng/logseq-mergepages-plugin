@@ -25,7 +25,7 @@ const App = () => {
     }
   };
 
-  const clearMergeToPage = async () => {
+  const clearMergeToPage = () => {
     setPageToMergeTo('');
   };
 
