@@ -27,8 +27,6 @@ const App = () => {
 
   const clearMergeToPage = async () => {
     setPageToMergeTo('');
-    const x = await logseq.App.getUserConfigs();
-    console.log(x);
   };
 
   const setMergeFromPage = async () => {
