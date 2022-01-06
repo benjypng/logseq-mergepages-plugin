@@ -1,5 +1,3 @@
-![GitHub all releases](https://img.shields.io/github/downloads/hkgnp/logseq-mergepages-plugin/total)
-
 # Introduction
 
 This simple plugin helps to merge multiple pages into a single page. Links to previous pages are redirected to the page that they have been merged to.
@@ -8,6 +6,7 @@ This simple plugin helps to merge multiple pages into a single page. Links to pr
 
 - Page titles with square brackets.
 - Merge different pages to the same page at different times.
+- User preferred date format.
 
 See video below for details.
 
