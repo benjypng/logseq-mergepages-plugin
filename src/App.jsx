@@ -25,6 +25,31 @@ const App = () => {
     }
   };
 
+  const mergeLinkedBlocks = async () => {
+    const currPage = await logseq.Editor.getCurrentPage();
+
+    if (!currPage) {
+      logseq.App.showMsg(
+        'This can only work on a journal page or regular page.'
+      );
+    }
+
+    const getLinkedBlocks = await logseq.DB.datascriptQuery(`[
+      :find (pull ?b [*]) 
+      :where 
+          [?b :block/path-refs [:block/name "${currPage.name}"]] 
+  ]`);
+    const sortedLinkedBlocks = getLinkedBlocks.map((i) => i[0].content);
+
+    for (let b of sortedLinkedBlocks) {
+      await logseq.Editor.insertBlock(currPage.name, b, {
+        isPageBlock: true,
+        before: false,
+        sibling: true,
+      });
+    }
+  };
+
   const clearMergeToPage = () => {
     setPageToMergeTo('');
   };
@@ -171,12 +196,32 @@ const App = () => {
     logseq.App.pushState('page', { name: pageToMergeTo.name });
     setPageToMergeTo('');
     setPagesToMergeFrom([]);
-    await logseq.App.showMsg('Merging completed.');
+    logseq.App.showMsg('Merging completed.');
   };
 
   return (
-    <div className="flex justify-center border border-black">
+    <div className="flex justify-center border border-black mergepages-settings">
       <div className="absolute top-3 bg-white rounded-lg p-3 w-2/3 border">
+        <div className="flex justify-between py-2">
+          <div>
+            <h1 className="font-mono mt-2">Merge all linked blocks</h1>
+            <h1 className="font-mono text-blue-700">
+              (Use this if you want to merge this page's linked blocks to this
+              page.)
+            </h1>
+          </div>
+          <div className="ml-2">
+            <button
+              onClick={mergeLinkedBlocks}
+              className="font-mono text-black border border-black bg-purple-400 p-2 rounded-md text-sm"
+            >
+              Merged linked blocks
+            </button>
+          </div>
+        </div>
+
+        <hr className="mt-4 mb-2 stroke-purple-400" />
+
         <div className="flex justify-between py-2">
           <h1 className="font-mono mt-2">Page to Merge To</h1>
           <div className="ml-2">
@@ -226,7 +271,7 @@ const App = () => {
         <div className="flex justify-between">
           <button
             onClick={hide}
-            className="font-mono text-black border bg-white border-purple-400 p-2 rounded-md"
+            className="font-mono text-black border bg-white border-purple-400 p-2 rounded-md mt-3"
           >
             Close UI
           </button>

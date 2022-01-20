@@ -16,6 +16,10 @@ See video below for details.
 
 ![](/screenshots/demo.gif)
 
+### Merge a page's linked blocks to the page itself
+
+![](/screenshots/demo3.gif)
+
 # Installation
 
 Download a [release](https://github.com/hkgnp/logseq-mergepages-plugin/releases), unzip into a folder of your choice, and manually load the plugin.

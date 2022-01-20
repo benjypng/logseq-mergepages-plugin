@@ -2,6 +2,7 @@ import '@logseq/libs';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
+import { handleClosePopup } from './handleClosePopup';
 
 const main = () => {
   console.log('logseq-mergepages-plugin loaded');
@@ -17,6 +18,8 @@ const main = () => {
       logseq.showMainUI();
     },
   });
+
+  handleClosePopup();
 
   logseq.App.registerUIItem('toolbar', {
     key: 'logseq-mergepages-plugin',

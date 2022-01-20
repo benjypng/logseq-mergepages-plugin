@@ -399,14 +399,17 @@ Ensure the default browser behavior of the `hidden` attribute.
 .ml-2 {
   margin-left: 0.5rem;
 }
-.ml-1 {
-  margin-left: 0.25rem;
-}
 .mt-4 {
   margin-top: 1rem;
 }
 .mb-2 {
   margin-bottom: 0.5rem;
+}
+.ml-1 {
+  margin-left: 0.25rem;
+}
+.mt-3 {
+  margin-top: 0.75rem;
 }
 .mr-1 {
   margin-right: 0.25rem;
@@ -496,6 +499,10 @@ Ensure the default browser behavior of the `hidden` attribute.
 .text-sm {
   font-size: 0.875rem;
   line-height: 1.25rem;
+}
+.text-blue-700 {
+  --tw-text-opacity: 1;
+  color: rgb(29 78 216 / var(--tw-text-opacity));
 }
 .text-black {
   --tw-text-opacity: 1;
