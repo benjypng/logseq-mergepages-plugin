@@ -35,19 +35,37 @@ const App = () => {
     }
 
     const getLinkedBlocks = await logseq.DB.datascriptQuery(`[
-      :find (pull ?b [*]) 
-      :where 
-          [?b :block/path-refs [:block/name "${currPage.name}"]] 
-  ]`);
-    const sortedLinkedBlocks = getLinkedBlocks.map((i) => i[0].content);
+      :find (pull ?b [*])
+      :where
+          [?b :block/parent ?p]
+          [?b :block/refs [:block/name "${currPage.name}"]]]`);
 
+    const sortedLinkedBlocks = getLinkedBlocks.map((i) => ({
+      uuid: i[0].uuid.$uuid$,
+    }));
+
+    let batchBlock = [];
     for (let b of sortedLinkedBlocks) {
-      await logseq.Editor.insertBlock(currPage.name, b, {
-        isPageBlock: true,
-        before: false,
-        sibling: true,
+      const payload = await logseq.Editor.getBlock(b.uuid, {
+        includeChildren: true,
       });
+      batchBlock.push(payload);
     }
+
+    const tempBlock = await logseq.Editor.insertBlock(currPage.name, '', {
+      isPageBlock: true,
+      sibling: true,
+      before: false,
+    });
+
+    await logseq.Editor.insertBatchBlock(tempBlock.uuid, batchBlock, {
+      before: false,
+      sibling: true,
+    });
+
+    await logseq.Editor.removeBlock(tempBlock.uuid);
+
+    logseq.hideMainUI();
   };
 
   const clearMergeToPage = () => {
