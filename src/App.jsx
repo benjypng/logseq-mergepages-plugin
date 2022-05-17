@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import './App.css';
-import '@logseq/libs';
-import Card from './Card';
+import React, { useState } from "react";
+import "./App.css";
+import "@logseq/libs";
+import Card from "./Card";
 
 const App = () => {
-  const [pageToMergeTo, setPageToMergeTo] = useState('');
+  const [pageToMergeTo, setPageToMergeTo] = useState("");
   const [pagesToMergeFrom, setPagesToMergeFrom] = useState([]);
 
   const hide = () => {
@@ -14,12 +14,12 @@ const App = () => {
   const setMergeToPage = async () => {
     const page = await logseq.Editor.getCurrentPage();
     if (page === null) {
-      logseq.App.showMsg('You can only set normal pages or journal pages.');
+      logseq.App.showMsg("You can only set normal pages or journal pages.");
     } else if (
       pagesToMergeFrom.length !== 0 &&
       pagesToMergeFrom.some((p) => p.uuid === page.uuid)
     ) {
-      logseq.App.showMsg('You are trying to merge a page into the same page.');
+      logseq.App.showMsg("You are trying to merge a page into the same page.");
     } else {
       setPageToMergeTo(page);
     }
@@ -30,7 +30,7 @@ const App = () => {
 
     if (!currPage) {
       logseq.App.showMsg(
-        'This can only work on a journal page or regular page.'
+        "This can only work on a journal page or regular page."
       );
     }
 
@@ -41,48 +41,41 @@ const App = () => {
           [?b :block/refs [:block/name "${currPage.name}"]]]`);
 
     const sortedLinkedBlocks = getLinkedBlocks.map((i) => ({
-      uuid: i[0].uuid.$uuid$,
+      content: i[0].content,
     }));
 
-    let batchBlock = [];
+    console.log(sortedLinkedBlocks);
+
     for (let b of sortedLinkedBlocks) {
-      const payload = await logseq.Editor.getBlock(b.uuid, {
-        includeChildren: true,
+      await logseq.Editor.insertBlock(currPage.name, b.content, {
+        isPageBlock: true,
+        before: false,
+        sibling: true,
       });
-      batchBlock.push(payload);
     }
 
-    const tempBlock = await logseq.Editor.insertBlock(currPage.name, '', {
-      isPageBlock: true,
-      sibling: true,
-      before: false,
-    });
-
-    await logseq.Editor.insertBatchBlock(tempBlock.uuid, batchBlock, {
-      before: false,
-      sibling: true,
-    });
-
-    await logseq.Editor.removeBlock(tempBlock.uuid);
+    window.setTimeout(async function () {
+      await logseq.Editor.exitEditingMode();
+    }, 100);
 
     logseq.hideMainUI();
   };
 
   const clearMergeToPage = () => {
-    setPageToMergeTo('');
+    setPageToMergeTo("");
   };
 
   const setMergeFromPage = async () => {
     const page = await logseq.Editor.getCurrentPage();
     if (page === null) {
-      logseq.App.showMsg('You can only set normal pages or journal pages.');
+      logseq.App.showMsg("You can only set normal pages or journal pages.");
     } else if (
       pagesToMergeFrom.length !== 0 &&
       pagesToMergeFrom.some((p) => p.uuid === page.uuid)
     ) {
-      logseq.App.showMsg('Page has already been added.');
+      logseq.App.showMsg("Page has already been added.");
     } else if (page.uuid === pageToMergeTo.uuid) {
-      logseq.App.showMsg('You are trying to merge a page into the same page.');
+      logseq.App.showMsg("You are trying to merge a page into the same page.");
     } else {
       let clone = [...pagesToMergeFrom, page];
       setPagesToMergeFrom(clone);
@@ -90,15 +83,15 @@ const App = () => {
   };
 
   const clearMergeFromPage = () => {
-    setPagesToMergeFrom('');
+    setPagesToMergeFrom("");
   };
 
   const getOrdinalNum = (n) => {
     return (
       n +
       (n > 0
-        ? ['th', 'st', 'nd', 'rd'][(n > 3 && n < 21) || n % 10 > 3 ? 0 : n % 10]
-        : '')
+        ? ["th", "st", "nd", "rd"][(n > 3 && n < 21) || n % 10 > 3 ? 0 : n % 10]
+        : "")
     );
   };
 
@@ -108,18 +101,18 @@ const App = () => {
     const getMonthNumber = d.getMonth() + 1;
     const getDate = d.getDate();
 
-    if (preferredDateFormat === 'MMM do yyyy') {
+    if (preferredDateFormat === "MMM do yyyy") {
       return `${getMonth} ${getOrdinalNum(getDate)}, ${getYear}`;
     } else if (
-      preferredDateFormat.includes('yyyy') &&
-      preferredDateFormat.includes('MM') &&
-      preferredDateFormat.includes('dd') &&
-      ('-' || '_' || '/')
+      preferredDateFormat.includes("yyyy") &&
+      preferredDateFormat.includes("MM") &&
+      preferredDateFormat.includes("dd") &&
+      ("-" || "_" || "/")
     ) {
       var mapObj = {
         yyyy: getYear,
-        dd: ('0' + getDate).slice(-2),
-        MM: ('0' + getMonthNumber).slice(-2),
+        dd: ("0" + getDate).slice(-2),
+        MM: ("0" + getMonthNumber).slice(-2),
       };
       let dateStr = preferredDateFormat;
       dateStr = dateStr.replace(/yyyy|dd|MM/gi, function (matched) {
@@ -133,7 +126,7 @@ const App = () => {
 
   const mergePages = async (option) => {
     if (!pageToMergeTo || pagesToMergeFrom.length === 0) {
-      logseq.App.showMsg('You have not selected a page to merge from or to.');
+      logseq.App.showMsg("You have not selected a page to merge from or to.");
       return;
     }
 
@@ -147,12 +140,12 @@ const App = () => {
       const pbt = await logseq.Editor.getPageBlocksTree(p.name);
       arrOfPageBlockTreesToMerge = arrOfPageBlockTreesToMerge.concat(pbt);
 
-      if (option === 'alias') {
+      if (option === "alias") {
         aliasArr = aliasArr.concat(p.name);
 
         // Delete page after completing the above actions
         await logseq.Editor.deletePage(p.name);
-      } else if (option === 'delete') {
+      } else if (option === "delete") {
         // Delete page after completing the above actions
         await logseq.Editor.deletePage(p.name);
       }
@@ -160,7 +153,7 @@ const App = () => {
 
     // Join all aliases in a string with square brackets
     let aliasArrWithBrackets = aliasArr.map((a) => `[[${a}]]`);
-    let aliasArrString = aliasArrWithBrackets.join(', ');
+    let aliasArrString = aliasArrWithBrackets.join(", ");
 
     // Get page blocks tree for the page to merge to
     const pbtPageMergeTo = await logseq.Editor.getPageBlocksTree(
@@ -168,12 +161,12 @@ const App = () => {
     );
 
     // Scenario: Alias is already existing
-    if (pbtPageMergeTo[0].content.startsWith('alias:: ')) {
+    if (pbtPageMergeTo[0].content.startsWith("alias:: ")) {
       // Get the current alias as a string
       let currAliasString = pbtPageMergeTo[0].content.substring(8);
 
       // Concatenate with the alias string that is gotten from runnig the current merge
-      currAliasString = currAliasString.concat(', ', aliasArrString);
+      currAliasString = currAliasString.concat(", ", aliasArrString);
 
       // Update block if not the alias won't register
       await logseq.Editor.updateBlock(
@@ -185,7 +178,7 @@ const App = () => {
     } else {
       const propertyBlock = await logseq.Editor.insertBlock(
         pbtPageMergeTo[0].uuid,
-        '',
+        "",
         { before: true }
       );
 
@@ -211,10 +204,10 @@ const App = () => {
       { sibling: false }
     );
 
-    logseq.App.pushState('page', { name: pageToMergeTo.name });
-    setPageToMergeTo('');
+    logseq.App.pushState("page", { name: pageToMergeTo.name });
+    setPageToMergeTo("");
     setPagesToMergeFrom([]);
-    logseq.App.showMsg('Merging completed.');
+    logseq.App.showMsg("Merging completed.");
   };
 
   return (
@@ -296,7 +289,7 @@ const App = () => {
           {pageToMergeTo && pagesToMergeFrom.length > 0 && (
             <div>
               <button
-                onClick={() => mergePages('alias')}
+                onClick={() => mergePages("alias")}
                 className="font-mono text-black border border-black bg-pink-400 p-2 rounded-md mr-1"
               >
                 Merge and create aliases
