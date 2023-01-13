@@ -1,16 +1,17 @@
-import '@logseq/libs';
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
-import { handleClosePopup } from './handleClosePopup';
+import "@logseq/libs";
+import React from "react";
+import ReactDOM from "react-dom";
+import App from "./App";
+import { handleClosePopup } from "./handleClosePopup";
 
 const main = () => {
-  console.log('logseq-mergepages-plugin loaded');
+  console.log("logseq-mergepages-plugin loaded");
+
   ReactDOM.render(
     <React.StrictMode>
       <App />
     </React.StrictMode>,
-    document.getElementById('app')
+    document.getElementById("app")
   );
 
   logseq.provideModel({
@@ -21,13 +22,10 @@ const main = () => {
 
   handleClosePopup();
 
-  logseq.App.registerUIItem('toolbar', {
-    key: 'logseq-mergepages-plugin',
+  logseq.App.registerUIItem("toolbar", {
+    key: "logseq-mergepages-plugin",
     template: `
-      <a data-on-click="show"
-      class="button">
-      <i class="ti ti-fold"></i>
-    </a>`,
+      <a data-on-click="show" class="button"><i class="ti ti-fold"></i></a>`,
   });
 };
 

@@ -14,12 +14,12 @@ const App = () => {
   const setMergeToPage = async () => {
     const page = await logseq.Editor.getCurrentPage();
     if (page === null) {
-      logseq.App.showMsg("You can only set normal pages or journal pages.");
+      logseq.UI.showMsg("You can only set normal pages or journal pages.");
     } else if (
       pagesToMergeFrom.length !== 0 &&
       pagesToMergeFrom.some((p) => p.uuid === page.uuid)
     ) {
-      logseq.App.showMsg("You are trying to merge a page into the same page.");
+      logseq.UI.showMsg("You are trying to merge a page into the same page.");
     } else {
       setPageToMergeTo(page);
     }
@@ -29,7 +29,7 @@ const App = () => {
     const currPage = await logseq.Editor.getCurrentPage();
 
     if (!currPage) {
-      logseq.App.showMsg(
+      logseq.UI.showMsg(
         "This can only work on a journal page or regular page."
       );
     }
@@ -40,19 +40,19 @@ const App = () => {
           [?b :block/parent ?p]
           [?b :block/refs [:block/name "${currPage.name}"]]]`);
 
-    const sortedLinkedBlocks = getLinkedBlocks.map((i) => ({
-      content: i[0].content,
-    }));
-
-    console.log(sortedLinkedBlocks);
-
-    for (let b of sortedLinkedBlocks) {
-      await logseq.Editor.insertBlock(currPage.name, b.content, {
-        isPageBlock: true,
-        before: false,
-        sibling: true,
+    let batchBlk = [];
+    for (const block of getLinkedBlocks) {
+      const blkObj = await logseq.Editor.getBlock(block[0].uuid, {
+        includeChildren: true,
       });
+      batchBlk.push(blkObj);
     }
+
+    await logseq.Editor.insertBatchBlock(currPage.uuid, batchBlk, {
+      isPageBlock: true,
+      before: false,
+      sibling: true,
+    });
 
     window.setTimeout(async function () {
       await logseq.Editor.exitEditingMode();
@@ -68,14 +68,14 @@ const App = () => {
   const setMergeFromPage = async () => {
     const page = await logseq.Editor.getCurrentPage();
     if (page === null) {
-      logseq.App.showMsg("You can only set normal pages or journal pages.");
+      logseq.UI.showMsg("You can only set normal pages or journal pages.");
     } else if (
       pagesToMergeFrom.length !== 0 &&
       pagesToMergeFrom.some((p) => p.uuid === page.uuid)
     ) {
-      logseq.App.showMsg("Page has already been added.");
+      logseq.UI.showMsg("Page has already been added.");
     } else if (page.uuid === pageToMergeTo.uuid) {
-      logseq.App.showMsg("You are trying to merge a page into the same page.");
+      logseq.UI.showMsg("You are trying to merge a page into the same page.");
     } else {
       let clone = [...pagesToMergeFrom, page];
       setPagesToMergeFrom(clone);
