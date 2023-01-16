@@ -34,29 +34,39 @@ const App = () => {
       );
     }
 
-    const getLinkedBlocks = await logseq.DB.datascriptQuery(`[
+    const getLinkedBlocks = (
+      await logseq.DB.datascriptQuery(
+        `[
       :find (pull ?b [*])
       :where
           [?b :block/parent ?p]
-          [?b :block/refs [:block/name "${currPage.name}"]]]`);
+          [?b :block/refs [:block/name "${currPage.name}"]]]`
+      )
+    )
+      .map((b) => b[0])
+      .filter((block) => block["path-refs"].length !== 1);
 
     let batchBlk = [];
     for (const block of getLinkedBlocks) {
-      const blkObj = await logseq.Editor.getBlock(block[0].uuid, {
+      const blkObj = await logseq.Editor.getBlock(block.uuid, {
         includeChildren: true,
       });
       batchBlk.push(blkObj);
     }
 
-    await logseq.Editor.insertBatchBlock(currPage.uuid, batchBlk, {
-      isPageBlock: true,
+    const headerBlk = await logseq.Editor.insertBlock(
+      currPage.uuid,
+      "is this after the page?"
+    );
+
+    await logseq.Editor.insertBatchBlock(headerBlk.uuid, batchBlk, {
       before: false,
       sibling: true,
     });
 
-    window.setTimeout(async function () {
-      await logseq.Editor.exitEditingMode();
-    }, 100);
+    await logseq.Editor.removeBlock(headerBlk.uuid);
+
+    await logseq.Editor.exitEditingMode();
 
     logseq.hideMainUI();
   };

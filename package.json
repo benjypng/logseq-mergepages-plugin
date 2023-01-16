@@ -1,6 +1,6 @@
 {
   "name": "logseq-mergepages-plugin",
-  "version": "1.6.3",
+  "version": "1.6.4",
   "description": "Simple plugin to help merge pages.",
   "main": "dist/index.html",
   "targets": {
@@ -14,7 +14,6 @@
   "license": "MIT",
   "dependencies": {
     "@logseq/libs": "^0.0.14",
-    "postcss-cli": "^10.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "tailwindcss": "^3.2.4"
@@ -26,6 +25,7 @@
   },
   "devDependencies": {
     "cssnano": "^5.1.14",
+    "postcss-cli": "^10.1.0",
     "parcel": "^2.8.2"
   }
 }
