@@ -13,7 +13,7 @@
     "dev": "bunx vite",
     "build": "bunx vite build",
     "prepare": "husky",
-    "lint:precommit": "echo \"Running biome\" && bunx @biomejs/biome check --write . && echo \"Running tsc\" && tsc && echo \"Running build\" && bun run build"
+    "lint:precommit": "echo \"Running biome\" && bunx @biomejs/biome check --write . && echo \"Running tsc\" && tsc --noEmit"
   },
   "release": {
     "branches": ["main"],
