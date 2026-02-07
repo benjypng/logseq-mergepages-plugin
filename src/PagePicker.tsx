@@ -1,7 +1,7 @@
 import './pagepicker.css'
 
 import { IBatchBlock, PageEntity } from '@logseq/libs/dist/LSPlugin.user'
-import { KeyboardEvent, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 interface PagePickerProps {
   page: string
@@ -13,23 +13,18 @@ export const PagePicker = ({ page, allPages }: PagePickerProps) => {
   const [results, setResults] = useState<PageEntity[]>([])
   const cardRef = useRef<HTMLDivElement>(null)
 
-  const close = () => {
-    setSearchString('')
-    setResults([])
-    logseq.hideMainUI()
-  }
-
   useEffect(() => {
     const handleKeyDown = (e: globalThis.KeyboardEvent) => {
-      if (e.key === 'Escape') close()
+      if (e.key === 'Escape') {
+        logseq.hideMainUI()
+      }
     }
     document.addEventListener('keydown', handleKeyDown)
     return () => document.removeEventListener('keydown', handleKeyDown)
   }, [])
 
-  const handleFilter = async (e: KeyboardEvent<HTMLInputElement>) => {
-    if (searchString.length < 3) return
-
+  const handleFilter = () => {
+    if (searchString.length < 2) return
     const filteredResults = allPages.filter((page) =>
       page.name.toLowerCase().includes(searchString.toLowerCase()),
     )
