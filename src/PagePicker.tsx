@@ -58,7 +58,11 @@ export const PagePicker = ({ page, allPages }: PagePickerProps) => {
 
   return (
     <div id="pagepicker-container" onClick={close}>
-      <div id="pagepicker-card" ref={cardRef} onClick={(e) => e.stopPropagation()}>
+      <div
+        id="pagepicker-card"
+        ref={cardRef}
+        onClick={(e) => e.stopPropagation()}
+      >
         <div id="pagepicker-input-wrapper">
           <svg
             className="pagepicker-search-icon"

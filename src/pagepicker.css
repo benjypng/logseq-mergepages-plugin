@@ -85,7 +85,9 @@
   cursor: pointer;
   color: #374151;
   font-size: 14px;
-  transition: background-color 0.1s ease, color 0.1s ease;
+  transition:
+    background-color 0.1s ease,
+    color 0.1s ease;
 }
 
 .pagepicker-result-item:hover {
